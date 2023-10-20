@@ -17,7 +17,8 @@ defmodule CollectedPublicData.Application do
       # Start a worker by calling: CollectedPublicData.Worker.start_link(arg)
       # {CollectedPublicData.Worker, arg},
       # Start to serve requests, typically the last entry
-      CollectedPublicDataWeb.Endpoint
+      CollectedPublicDataWeb.Endpoint,
+      {CollectedPressWs, url: "wss://collected.press/1/ws"}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

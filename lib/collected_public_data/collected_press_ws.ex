@@ -6,7 +6,13 @@ defmodule CollectedPressWs do
   require Logger
   require Mint.HTTP
 
-  defstruct [:conn, :websocket, :request_ref, :caller, :status, :resp_headers, :closing?]
+  defstruct [:uri, :conn, :websocket, :request_ref, :caller, :status, :resp_headers, :closing?]
+
+  # GenServer.call(CollectedPressWs, {:send_text, Jason.encode!(%{"id": 2, "method": "markdown", "params": %{source: "# Hello"}})})
+
+  def start_link(arg) do
+    GenServer.start_link(__MODULE__, arg, name: __MODULE__)
+  end
 
   def connect(url) do
     with {:ok, socket} <- GenServer.start_link(__MODULE__, []),
@@ -15,13 +21,53 @@ defmodule CollectedPressWs do
     end
   end
 
+  @spec send_message(atom() | pid() | {atom(), any()} | {:via, atom(), any()}, any()) :: any()
   def send_message(pid, text) do
     GenServer.call(pid, {:send_text, text})
   end
 
   @impl GenServer
-  def init([]) do
-    {:ok, %__MODULE__{}}
+  def init([url: url]) do
+    uri = URI.parse(url)
+    # {:ok, %__MODULE__{uri: uri}}
+
+    state = %__MODULE__{uri: uri}
+    {:ok, state, {:continue, {:connect, url}}}
+  end
+
+  @impl GenServer
+  def handle_continue({:connect, _url}, state) do
+    uri = state.uri
+
+    http_scheme =
+      case uri.scheme do
+        "ws" -> :http
+        "wss" -> :https
+      end
+
+    ws_scheme =
+      case uri.scheme do
+        "ws" -> :ws
+        "wss" -> :wss
+      end
+
+    path =
+      case uri.query do
+        nil -> uri.path
+        query -> uri.path <> "?" <> query
+      end
+
+    with {:ok, conn} <- Mint.HTTP.connect(http_scheme, uri.host, uri.port, protocols: [:http1]),
+         {:ok, conn, ref} <- Mint.WebSocket.upgrade(ws_scheme, conn, path, []) do
+      state = %{state | conn: conn, request_ref: ref}
+      {:noreply, state}
+    else
+      {:error, reason} ->
+        {:stop, {:error, reason}, state}
+
+      {:error, conn, reason} ->
+        {:stop, {:error, reason}, put_in(state.conn, conn)}
+    end
   end
 
   @impl GenServer
@@ -52,7 +98,7 @@ defmodule CollectedPressWs do
         query -> uri.path <> "?" <> query
       end
 
-    with {:ok, conn} <- Mint.HTTP.connect(http_scheme, uri.host, uri.port),
+    with {:ok, conn} <- Mint.HTTP.connect(http_scheme, uri.host, uri.port, protocols: [:http1]),
          {:ok, conn, ref} <- Mint.WebSocket.upgrade(ws_scheme, conn, path, []) do
       state = %{state | conn: conn, request_ref: ref, caller: from}
       {:noreply, state}
@@ -154,9 +200,17 @@ defmodule CollectedPressWs do
         %{state | closing?: true}
 
       {:text, text}, state ->
-        Logger.debug("Received: #{inspect(text)}, sending back the reverse")
-        {:ok, state} = send_frame(state, {:text, String.reverse(text)})
-        state
+        # Logger.debug("Received: #{inspect(text)}, sending back the reverse")
+        # {:ok, state} = send_frame(state, {:text, String.reverse(text)})
+        Logger.debug("Received: #{inspect(text)}")
+        case Jason.decode(text) do
+          {:ok, %{"jsonrpc" => "2.0", "id" => id, "result" => result}} ->
+            Logger.debug("Received: #{id} #{inspect(result)}")
+            state
+
+          _ ->
+            state
+        end
 
       frame, state ->
         Logger.debug("Unexpected frame received: #{inspect(frame)}")
