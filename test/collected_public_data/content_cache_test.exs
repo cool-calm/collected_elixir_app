@@ -180,4 +180,62 @@ defmodule CollectedPublicData.ContentCacheTest do
       assert %Ecto.Changeset{} = ContentCache.change_markdown_content(markdown_content)
     end
   end
+
+  describe "html_cached_content" do
+    alias CollectedPublicData.ContentCache.HTMLContent
+
+    import CollectedPublicData.ContentCacheFixtures
+
+    @invalid_attrs %{size: nil, sha256: nil, content: nil}
+
+    test "list_html_cached_content/0 returns all html_cached_content" do
+      html_content = html_content_fixture()
+      assert ContentCache.list_html_cached_content() == [html_content]
+    end
+
+    test "get_html_content!/1 returns the html_content with given id" do
+      html_content = html_content_fixture()
+      assert ContentCache.get_html_content!(html_content.id) == html_content
+    end
+
+    test "create_html_content/1 with valid data creates a html_content" do
+      valid_attrs = %{size: 42, sha256: "some sha256", content: "some content"}
+
+      assert {:ok, %HTMLContent{} = html_content} = ContentCache.create_html_content(valid_attrs)
+      assert html_content.size == 42
+      assert html_content.sha256 == "some sha256"
+      assert html_content.content == "some content"
+    end
+
+    test "create_html_content/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = ContentCache.create_html_content(@invalid_attrs)
+    end
+
+    test "update_html_content/2 with valid data updates the html_content" do
+      html_content = html_content_fixture()
+      update_attrs = %{size: 43, sha256: "some updated sha256", content: "some updated content"}
+
+      assert {:ok, %HTMLContent{} = html_content} = ContentCache.update_html_content(html_content, update_attrs)
+      assert html_content.size == 43
+      assert html_content.sha256 == "some updated sha256"
+      assert html_content.content == "some updated content"
+    end
+
+    test "update_html_content/2 with invalid data returns error changeset" do
+      html_content = html_content_fixture()
+      assert {:error, %Ecto.Changeset{}} = ContentCache.update_html_content(html_content, @invalid_attrs)
+      assert html_content == ContentCache.get_html_content!(html_content.id)
+    end
+
+    test "delete_html_content/1 deletes the html_content" do
+      html_content = html_content_fixture()
+      assert {:ok, %HTMLContent{}} = ContentCache.delete_html_content(html_content)
+      assert_raise Ecto.NoResultsError, fn -> ContentCache.get_html_content!(html_content.id) end
+    end
+
+    test "change_html_content/1 returns a html_content changeset" do
+      html_content = html_content_fixture()
+      assert %Ecto.Changeset{} = ContentCache.change_html_content(html_content)
+    end
+  end
 end

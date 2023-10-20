@@ -1,0 +1,12 @@
+<.header>
+  <div class="font-mono"><.link href={~p"/html"}>html</.link>/<data class="inline-flex truncate w-[8ch]"><%= @html_content.sha256 %></data></div>
+  <:subtitle>
+    <data class="font-mono"><%= @html_content.size %> B</data>
+  </:subtitle>
+</.header>
+
+<div class="prose">
+  <pre class="mt-8 break-words whitespace-pre-wrap"><%= @html_content.content %></pre>
+</div>
+
+<.back navigate={~p"/html"}>Back to HTML</.back>

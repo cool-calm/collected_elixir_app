@@ -53,4 +53,20 @@ defmodule CollectedPublicData.ContentCacheFixtures do
 
     markdown_content
   end
+
+  @doc """
+  Generate a html_content.
+  """
+  def html_content_fixture(attrs \\ %{}) do
+    {:ok, html_content} =
+      attrs
+      |> Enum.into(%{
+        content: "some content",
+        sha256: "some sha256",
+        size: 42
+      })
+      |> CollectedPublicData.ContentCache.create_html_content()
+
+    html_content
+  end
 end

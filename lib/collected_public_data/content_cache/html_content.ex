@@ -1,10 +1,10 @@
-defmodule CollectedPublicData.ContentCache.MarkdownContent do
+defmodule CollectedPublicData.ContentCache.HTMLContent do
   use Ecto.Schema
   import Ecto.Changeset
 
   alias CollectedPublicData.ContentCache.SHA
 
-  schema "markdown_cached_content" do
+  schema "html_cached_content" do
     field :size, :integer
     field :sha256, :string
     field :content, :binary
@@ -22,8 +22,8 @@ defmodule CollectedPublicData.ContentCache.MarkdownContent do
     |> put_change(:sha256, sha256)
   end
 
-  def changeset(markdown_content, attrs) do
-    changeset = change(markdown_content)
+  def changeset(html_content, attrs) do
+    changeset = change(html_content)
 
     changeset =
       case attrs do

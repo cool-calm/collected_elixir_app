@@ -20,6 +20,7 @@ defmodule CollectedPublicDataWeb.Router do
     get "/", PageController, :home
     resources "/wasm", WasmContentController
     resources "/markdown", MarkdownContentController
+    resources "/html", HTMLContentController
     resources "/github_cached_content", GitHubContentController
   end
 

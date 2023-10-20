@@ -1,0 +1,8 @@
+<.header>
+  Edit Html content <%= @html_content.id %>
+  <:subtitle>Use this form to manage html_content records in your database.</:subtitle>
+</.header>
+
+<.html_content_form changeset={@changeset} action={~p"/html/#{@html_content}"} />
+
+<.back navigate={~p"/html"}>Back to html_cached_content</.back>

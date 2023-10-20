@@ -199,6 +199,19 @@ defmodule CollectedPublicData.ContentCache do
     WasmContent.changeset(wasm_content, attrs)
   end
 
+  def upsert_content(content_type, changeset) do
+    changeset
+    |> Changeset.unique_constraint(:sha256)
+    |> Repo.insert()
+    |> case do
+      {:error, changeset} ->
+        {:ok, get_content_by_sha256!(content_type, Changeset.get_field(changeset, :sha256))}
+
+      other ->
+        other
+    end
+  end
+
   alias CollectedPublicData.ContentCache.MarkdownContent
 
   @doc """
@@ -232,29 +245,12 @@ defmodule CollectedPublicData.ContentCache do
   def get_markdown_content_with_sha256!(sha256), do: Repo.get_by!(MarkdownContent, sha256: sha256)
 
   @doc """
-  Creates a markdown_content.
-
-  ## Examples
-
-      iex> create_markdown_content(%{field: value})
-      {:ok, %MarkdownContent{}}
-
-      iex> create_markdown_content(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
+  Creates markdown content if it doesn’t already exist.
   """
   def create_markdown_content(attrs \\ %{}) do
     %MarkdownContent{}
     |> MarkdownContent.changeset(attrs)
-    |> Changeset.unique_constraint(:sha256)
-    |> Repo.insert()
-    |> case do
-      {:error, changeset} ->
-        {:ok, get_markdown_content_with_sha256!(Changeset.get_field(changeset, :sha256))}
-
-      other ->
-        other
-    end
+    |> then(&upsert_content(:markdown, &1))
   end
 
   @doc """
@@ -303,4 +299,95 @@ defmodule CollectedPublicData.ContentCache do
   def change_markdown_content(%MarkdownContent{} = markdown_content, attrs \\ %{}) do
     MarkdownContent.changeset(markdown_content, attrs)
   end
+
+  alias CollectedPublicData.ContentCache.HTMLContent
+
+  @doc """
+  Returns the list of html_cached_content.
+
+  ## Examples
+
+      iex> list_html_cached_content()
+      [%HTMLContent{}, ...]
+
+  """
+  def list_html_cached_content do
+    Repo.all(HTMLContent)
+  end
+
+  @doc """
+  Gets a single html_content.
+
+  Raises `Ecto.NoResultsError` if the Html content does not exist.
+
+  ## Examples
+
+      iex> get_html_content!(123)
+      %HTMLContent{}
+
+      iex> get_html_content!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_html_content!(id), do: Repo.get!(HTMLContent, id)
+  def get_html_content_with_sha256!(sha256), do: Repo.get_by!(HTMLContent, sha256: sha256)
+
+  @doc """
+  Creates a HTML content if it doesn’t already exist.
+  """
+  def create_html_content(attrs \\ %{}) do
+    %HTMLContent{}
+    |> HTMLContent.changeset(attrs)
+    |> then(&upsert_content(:html, &1))
+  end
+
+  @doc """
+  Updates a html_content.
+
+  ## Examples
+
+      iex> update_html_content(html_content, %{field: new_value})
+      {:ok, %HTMLContent{}}
+
+      iex> update_html_content(html_content, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_html_content(%HTMLContent{} = html_content, attrs) do
+    html_content
+    |> HTMLContent.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a html_content.
+
+  ## Examples
+
+      iex> delete_html_content(html_content)
+      {:ok, %HTMLContent{}}
+
+      iex> delete_html_content(html_content)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_html_content(%HTMLContent{} = html_content) do
+    Repo.delete(html_content)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking html_content changes.
+
+  ## Examples
+
+      iex> change_html_content(html_content)
+      %Ecto.Changeset{data: %HTMLContent{}}
+
+  """
+  def change_html_content(%HTMLContent{} = html_content, attrs \\ %{}) do
+    HTMLContent.changeset(html_content, attrs)
+  end
+
+  def get_content_by_sha256!(:markdown, sha256), do: get_markdown_content_with_sha256!(sha256)
+  def get_content_by_sha256!(:html, sha256), do: get_html_content_with_sha256!(sha256)
 end

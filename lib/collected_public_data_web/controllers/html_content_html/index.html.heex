@@ -1,0 +1,23 @@
+<.header>
+  HTML content
+  <:actions>
+    <.link href={~p"/html/new"}>
+      <.button>Add HTML</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="html_cached_content" rows={@html_cached_content} row_click={&JS.navigate(~p"/html/#{&1}")}>
+  <:col :let={html_content} label="Sha256"><%= html_content.sha256 %></:col>
+  <:col :let={html_content} label="Size"><%= html_content.size %></:col>
+  <:action :let={html_content}>
+    <div class="sr-only">
+      <.link navigate={~p"/html/#{html_content}"}>Show</.link>
+    </div>
+  </:action>
+  <:action :let={html_content}>
+    <.link href={~p"/html/#{html_content}"} method="delete" data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>
