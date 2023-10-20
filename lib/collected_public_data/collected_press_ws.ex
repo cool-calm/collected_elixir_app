@@ -6,12 +6,24 @@ defmodule CollectedPressWs do
   require Logger
   require Mint.HTTP
 
-  defstruct [:uri, :conn, :websocket, :request_ref, :caller, :status, :resp_headers, :closing?]
+  defstruct [
+    :uri,
+    :conn,
+    :websocket,
+    :request_ref,
+    :caller,
+    :status,
+    :resp_headers,
+    :closing?,
+    :callers_to_rpc_ids
+  ]
+
+  @name __MODULE__
 
   # GenServer.call(CollectedPressWs, {:send_text, Jason.encode!(%{"id": 2, "method": "markdown", "params": %{source: "# Hello"}})})
 
   def start_link(arg) do
-    GenServer.start_link(__MODULE__, arg, name: __MODULE__)
+    GenServer.start_link(__MODULE__, arg, name: @name)
   end
 
   def connect(url) do
@@ -27,11 +39,11 @@ defmodule CollectedPressWs do
   end
 
   @impl GenServer
-  def init([url: url]) do
+  def init(url: url) do
     uri = URI.parse(url)
     # {:ok, %__MODULE__{uri: uri}}
 
-    state = %__MODULE__{uri: uri}
+    state = %__MODULE__{uri: uri, callers_to_rpc_ids: %{}}
     {:ok, state, {:continue, {:connect, url}}}
   end
 
@@ -74,6 +86,15 @@ defmodule CollectedPressWs do
   def handle_call({:send_text, text}, _from, state) do
     {:ok, state} = send_frame(state, {:text, text})
     {:reply, :ok, state}
+  end
+
+  @impl GenServer
+  def handle_call({:markdown_to_html, markdown_text}, from, state) do
+    rpc_id = Ecto.UUID.generate()
+    json = Jason.encode!(%{id: rpc_id, method: "markdown", params: %{source: markdown_text}})
+    state = add_caller_rpc_id(state, from, rpc_id)
+    {:ok, state} = send_frame(state, {:text, json})
+    {:noreply, state}
   end
 
   @impl GenServer
@@ -203,10 +224,20 @@ defmodule CollectedPressWs do
         # Logger.debug("Received: #{inspect(text)}, sending back the reverse")
         # {:ok, state} = send_frame(state, {:text, String.reverse(text)})
         Logger.debug("Received: #{inspect(text)}")
+
         case Jason.decode(text) do
-          {:ok, %{"jsonrpc" => "2.0", "id" => id, "result" => result}} ->
-            Logger.debug("Received: #{id} #{inspect(result)}")
-            state
+          {:ok, %{"jsonrpc" => "2.0", "id" => rpc_id, "result" => result}} ->
+            Logger.debug("Received: #{rpc_id} #{inspect(result)}")
+
+            case pop_caller_rpc_id(state, rpc_id) do
+              {nil, state} ->
+                # Ignore
+                state
+
+              {caller, state} ->
+                GenServer.reply(caller, result["html"])
+                state
+            end
 
           _ ->
             state
@@ -229,6 +260,18 @@ defmodule CollectedPressWs do
   defp reply(state, response) do
     if state.caller, do: GenServer.reply(state.caller, response)
     put_in(state.caller, nil)
+  end
+
+  defp add_caller_rpc_id(state, caller, rpc_id) do
+    put_in(state.callers_to_rpc_ids[rpc_id], caller)
+  end
+
+  defp pop_caller_rpc_id(state, rpc_id) do
+    pop_in(state.callers_to_rpc_ids[rpc_id])
+  end
+
+  def markdown_to_html(markdown_text) do
+    GenServer.call(@name, {:markdown_to_html, markdown_text})
   end
 end
 
