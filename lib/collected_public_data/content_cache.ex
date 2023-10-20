@@ -5,6 +5,7 @@ defmodule CollectedPublicData.ContentCache do
 
   import Ecto.Query, warn: false
   alias CollectedPublicData.Repo
+  alias Ecto.Changeset
 
   alias CollectedPublicData.ContentCache.GitHubContent
 
@@ -228,6 +229,7 @@ defmodule CollectedPublicData.ContentCache do
 
   """
   def get_markdown_content!(id), do: Repo.get!(MarkdownContent, id)
+  def get_markdown_content_with_sha256!(sha256), do: Repo.get_by!(MarkdownContent, sha256: sha256)
 
   @doc """
   Creates a markdown_content.
@@ -244,7 +246,15 @@ defmodule CollectedPublicData.ContentCache do
   def create_markdown_content(attrs \\ %{}) do
     %MarkdownContent{}
     |> MarkdownContent.changeset(attrs)
+    |> Changeset.unique_constraint(:sha256)
     |> Repo.insert()
+    |> case do
+      {:error, changeset} ->
+        {:ok, get_markdown_content_with_sha256!(Changeset.get_field(changeset, :sha256))}
+
+      other ->
+        other
+    end
   end
 
   @doc """
