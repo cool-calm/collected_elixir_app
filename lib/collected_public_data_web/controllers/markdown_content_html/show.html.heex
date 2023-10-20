@@ -1,10 +1,12 @@
 <.header>
   Markdown #<%= @markdown_content.id %>
-  <%!-- <:actions>
-    <.link href={~p"/markdown/#{@markdown_content}/edit"}>
-      <.button>Edit markdown_content</.button>
-    </.link>
-  </:actions> --%>
+  <:actions>
+    <.simple_form :let={f} for={%{}} action={~p"/markdown/#{@markdown_content}/html"}>
+      <:actions>
+        <.button>Transform to HTML</.button>
+      </:actions>
+    </.simple_form>
+  </:actions>
 </.header>
 
 <.list>

@@ -1,0 +1,19 @@
+<.header>
+  Transform response <%= @transform_response.id %>
+  <:subtitle>This is a transform_response record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/content_transform_response/#{@transform_response}/edit"}>
+      <.button>Edit transform_response</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Type url"><%= @transform_response.type_url %></:item>
+  <:item title="In sha256"><%= @transform_response.in_sha256 %></:item>
+  <:item title="In media type"><%= @transform_response.in_media_type %></:item>
+  <:item title="Out sha256"><%= @transform_response.out_sha256 %></:item>
+  <:item title="Out media type"><%= @transform_response.out_media_type %></:item>
+</.list>
+
+<.back navigate={~p"/content_transform_response"}>Back to content_transform_response</.back>

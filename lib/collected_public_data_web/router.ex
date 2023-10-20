@@ -19,8 +19,13 @@ defmodule CollectedPublicDataWeb.Router do
 
     get "/", PageController, :home
     resources "/wasm", WasmContentController
-    resources "/markdown", MarkdownContentController
+
+    resources "/markdown", MarkdownContentController do
+      post "/html", MarkdownContentController, :transform_html
+    end
+
     resources "/html", HTMLContentController
+    resources "/content_transform_response", TransformResponseController
     resources "/github_cached_content", GitHubContentController
   end
 

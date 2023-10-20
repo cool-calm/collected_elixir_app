@@ -1,6 +1,7 @@
 defmodule CollectedPublicDataWeb.MarkdownContentController do
   use CollectedPublicDataWeb, :controller
 
+  alias CollectedPublicData.ContentTransform
   alias CollectedPublicData.ContentCache
   alias CollectedPublicData.ContentCache.MarkdownContent
 
@@ -58,5 +59,13 @@ defmodule CollectedPublicDataWeb.MarkdownContentController do
     conn
     |> put_flash(:info, "Markdown content deleted successfully.")
     |> redirect(to: ~p"/markdown")
+  end
+
+  def transform_html(conn, %{"markdown_content_id" => id}) do
+    markdown_content = ContentCache.get_markdown_content!(id)
+    html_content = ContentTransform.render_markdown(markdown_content.sha256)
+
+    conn
+    |> redirect(to: ~p"/html/#{html_content}")
   end
 end

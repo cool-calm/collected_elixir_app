@@ -1,0 +1,8 @@
+<.header>
+  Edit Transform response <%= @transform_response.id %>
+  <:subtitle>Use this form to manage transform_response records in your database.</:subtitle>
+</.header>
+
+<.transform_response_form changeset={@changeset} action={~p"/content_transform_response/#{@transform_response}"} />
+
+<.back navigate={~p"/content_transform_response"}>Back to content_transform_response</.back>

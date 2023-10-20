@@ -1,0 +1,27 @@
+<.header>
+  Listing Content transform response
+  <:actions>
+    <.link href={~p"/content_transform_response/new"}>
+      <.button>New Transform response</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="content_transform_response" rows={@content_transform_response} row_click={&JS.navigate(~p"/content_transform_response/#{&1}")}>
+  <:col :let={transform_response} label="Type url"><%= transform_response.type_url %></:col>
+  <:col :let={transform_response} label="In sha256"><%= transform_response.in_sha256 %></:col>
+  <:col :let={transform_response} label="In media type"><%= transform_response.in_media_type %></:col>
+  <:col :let={transform_response} label="Out sha256"><%= transform_response.out_sha256 %></:col>
+  <:col :let={transform_response} label="Out media type"><%= transform_response.out_media_type %></:col>
+  <:action :let={transform_response}>
+    <div class="sr-only">
+      <.link navigate={~p"/content_transform_response/#{transform_response}"}>Show</.link>
+    </div>
+    <.link navigate={~p"/content_transform_response/#{transform_response}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={transform_response}>
+    <.link href={~p"/content_transform_response/#{transform_response}"} method="delete" data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>
