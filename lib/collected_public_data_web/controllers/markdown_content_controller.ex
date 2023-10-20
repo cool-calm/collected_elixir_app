@@ -19,7 +19,7 @@ defmodule CollectedPublicDataWeb.MarkdownContentController do
       {:ok, markdown_content} ->
         conn
         |> put_flash(:info, "Markdown content created successfully.")
-        |> redirect(to: ~p"/markdown_cached_content/#{markdown_content}")
+        |> redirect(to: ~p"/markdown/#{markdown_content}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :new, changeset: changeset)
@@ -44,7 +44,7 @@ defmodule CollectedPublicDataWeb.MarkdownContentController do
       {:ok, markdown_content} ->
         conn
         |> put_flash(:info, "Markdown content updated successfully.")
-        |> redirect(to: ~p"/markdown_cached_content/#{markdown_content}")
+        |> redirect(to: ~p"/markdown/#{markdown_content}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :edit, markdown_content: markdown_content, changeset: changeset)
@@ -57,6 +57,6 @@ defmodule CollectedPublicDataWeb.MarkdownContentController do
 
     conn
     |> put_flash(:info, "Markdown content deleted successfully.")
-    |> redirect(to: ~p"/markdown_cached_content")
+    |> redirect(to: ~p"/markdown")
   end
 end

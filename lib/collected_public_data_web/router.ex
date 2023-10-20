@@ -18,8 +18,8 @@ defmodule CollectedPublicDataWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-    resources "/wasm_cached_content", WasmContentController
-    resources "/markdown_cached_content", MarkdownContentController
+    resources "/wasm", WasmContentController
+    resources "/markdown", MarkdownContentController
     resources "/github_cached_content", GitHubContentController
   end
 

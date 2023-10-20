@@ -19,7 +19,7 @@ defmodule CollectedPublicDataWeb.WasmContentController do
       {:ok, wasm_content} ->
         conn
         |> put_flash(:info, "Wasm content created successfully.")
-        |> redirect(to: ~p"/wasm_cached_content/#{wasm_content}")
+        |> redirect(to: ~p"/wasm/#{wasm_content}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :new, changeset: changeset)
@@ -44,7 +44,7 @@ defmodule CollectedPublicDataWeb.WasmContentController do
   #     {:ok, wasm_content} ->
   #       conn
   #       |> put_flash(:info, "Wasm content updated successfully.")
-  #       |> redirect(to: ~p"/wasm_cached_content/#{wasm_content}")
+  #       |> redirect(to: ~p"/wasm/#{wasm_content}")
 
   #     {:error, %Ecto.Changeset{} = changeset} ->
   #       render(conn, :edit, wasm_content: wasm_content, changeset: changeset)
@@ -57,6 +57,6 @@ defmodule CollectedPublicDataWeb.WasmContentController do
 
     conn
     |> put_flash(:info, "Wasm content deleted successfully.")
-    |> redirect(to: ~p"/wasm_cached_content")
+    |> redirect(to: ~p"/wasm")
   end
 end

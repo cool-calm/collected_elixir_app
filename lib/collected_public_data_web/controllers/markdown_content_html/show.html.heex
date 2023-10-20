@@ -1,7 +1,7 @@
 <.header>
   Markdown #<%= @markdown_content.id %>
   <%!-- <:actions>
-    <.link href={~p"/markdown_cached_content/#{@markdown_content}/edit"}>
+    <.link href={~p"/markdown/#{@markdown_content}/edit"}>
       <.button>Edit markdown_content</.button>
     </.link>
   </:actions> --%>
@@ -16,4 +16,4 @@
 
 <pre class=" break-words whitespace-pre-wrap"><%= @markdown_content.content %></pre>
 
-<.back navigate={~p"/markdown_cached_content"}>Back to markdown_cached_content</.back>
+<.back navigate={~p"/markdown"}>Back to markdown_cached_content</.back>

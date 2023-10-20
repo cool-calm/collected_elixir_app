@@ -1,23 +1,22 @@
 <.header>
-  Listing Wasm cached content
+  WebAssembly modules
   <:actions>
-    <.link href={~p"/wasm_cached_content/new"}>
-      <.button>New Wasm content</.button>
+    <.link href={~p"/wasm/new"}>
+      <.button>Add WebAssembly</.button>
     </.link>
   </:actions>
 </.header>
 
-<.table id="wasm_cached_content" rows={@wasm_cached_content} row_click={&JS.navigate(~p"/wasm_cached_content/#{&1}")}>
-  <:col :let={wasm_content} label="SHA256"><%= wasm_content.sha256 %></:col>
+<.table id="wasm_cached_content" rows={@wasm_cached_content} row_click={&JS.navigate(~p"/wasm/#{&1}")}>
+  <:col :let={wasm_content} label="SHA256"><data class="inline-block font-mono truncate w-[9ch]"><%= wasm_content.sha256 %></data></:col>
   <:col :let={wasm_content} label="Byte Size"><%= wasm_content.size %></:col>
   <:action :let={wasm_content}>
     <div class="sr-only">
-      <.link navigate={~p"/wasm_cached_content/#{wasm_content}"}>Show</.link>
+      <.link navigate={~p"/wasm/#{wasm_content}"}>Show</.link>
     </div>
-    <.link navigate={~p"/wasm_cached_content/#{wasm_content}/edit"}>Edit</.link>
   </:action>
   <:action :let={wasm_content}>
-    <.link href={~p"/wasm_cached_content/#{wasm_content}"} method="delete" data-confirm="Are you sure?">
+    <.link href={~p"/wasm/#{wasm_content}"} method="delete" data-confirm="Are you sure?">
       Delete
     </.link>
   </:action>

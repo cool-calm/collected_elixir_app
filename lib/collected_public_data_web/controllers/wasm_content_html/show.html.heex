@@ -2,7 +2,7 @@
   Wasm content <%= @wasm_content.id %>
   <:subtitle>This is a wasm_content record from your database.</:subtitle>
   <:actions>
-    <.link href={~p"/wasm_cached_content/#{@wasm_content}/edit"}>
+    <.link href={~p"/wasm/#{@wasm_content}/edit"}>
       <.button>Edit wasm_content</.button>
     </.link>
   </:actions>
@@ -14,4 +14,4 @@
   <%!-- <:item title="Content"><%= @wasm_content.content %></:item> --%>
 </.list>
 
-<.back navigate={~p"/wasm_cached_content"}>Back to wasm_cached_content</.back>
+<.back navigate={~p"/wasm"}>Back to wasm_cached_content</.back>
