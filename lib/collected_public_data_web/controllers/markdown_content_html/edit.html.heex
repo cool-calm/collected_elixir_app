@@ -1,0 +1,8 @@
+<.header>
+  Edit Markdown content <%= @markdown_content.id %>
+  <:subtitle>Use this form to manage markdown_content records in your database.</:subtitle>
+</.header>
+
+<.markdown_content_form changeset={@changeset} action={~p"/markdown_cached_content/#{@markdown_content}"} />
+
+<.back navigate={~p"/markdown_cached_content"}>Back to markdown_cached_content</.back>

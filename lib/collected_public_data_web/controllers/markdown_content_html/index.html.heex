@@ -1,0 +1,24 @@
+<.header>
+  Listing Markdown cached content
+  <:actions>
+    <.link href={~p"/markdown_cached_content/new"}>
+      <.button>Add Markdown</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="markdown_cached_content" rows={@markdown_cached_content} row_click={&JS.navigate(~p"/markdown_cached_content/#{&1}")}>
+  <:col :let={markdown} label="SHA256"><data class="inline-block font-mono truncate w-[9ch]"><%= markdown.sha256 %></data></:col>
+  <:col :let={markdown} label="Size"><%= markdown.size %></:col>
+  <:col :let={markdown} label="Content"><pre><%= String.slice(markdown.content, 0..100) |> String.split("\n", parts: 2) |> hd() %></pre></:col>
+  <:action :let={markdown}>
+    <div class="sr-only">
+      <.link navigate={~p"/markdown_cached_content/#{markdown}"}>Show</.link>
+    </div>
+  </:action>
+  <:action :let={markdown}>
+    <.link href={~p"/markdown_cached_content/#{markdown}"} method="delete" data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>

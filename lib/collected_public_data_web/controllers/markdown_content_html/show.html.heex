@@ -1,0 +1,17 @@
+<.header>
+  Markdown content <%= @markdown_content.id %>
+  <:subtitle>This is a markdown_content record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/markdown_cached_content/#{@markdown_content}/edit"}>
+      <.button>Edit markdown_content</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Sha256"><data class="inline-block font-mono truncate w-[9ch]"><%= @markdown_content.sha256 %></data></:item>
+  <:item title="Size"><%= @markdown_content.size %> B</:item>
+  <:item title="Content"><pre class=" break-words whitespace-pre-wrap"><%= @markdown_content.content %></pre></:item>
+</.list>
+
+<.back navigate={~p"/markdown_cached_content"}>Back to markdown_cached_content</.back>

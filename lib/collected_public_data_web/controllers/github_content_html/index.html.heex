@@ -1,0 +1,28 @@
+<.header>
+  Listing GitHub cached content
+  <:actions>
+    <.link href={~p"/github_cached_content/new"}>
+      <.button>New GitHub content</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="github_cached_content" rows={@github_cached_content} row_click={&JS.navigate(~p"/github_cached_content/#{&1}")}>
+  <:col :let={github_content} label="Owner"><%= github_content.owner %></:col>
+  <:col :let={github_content} label="Repo"><%= github_content.repo %></:col>
+  <:col :let={github_content} label="Sha"><%= github_content.sha %></:col>
+  <:col :let={github_content} label="Path"><%= github_content.path %></:col>
+  <:col :let={github_content} label="Content"><%= github_content.content %></:col>
+  <:col :let={github_content} label="Content type"><%= github_content.content_type %></:col>
+  <:action :let={github_content}>
+    <div class="sr-only">
+      <.link navigate={~p"/github_cached_content/#{github_content}"}>Show</.link>
+    </div>
+    <.link navigate={~p"/github_cached_content/#{github_content}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={github_content}>
+    <.link href={~p"/github_cached_content/#{github_content}"} method="delete" data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>

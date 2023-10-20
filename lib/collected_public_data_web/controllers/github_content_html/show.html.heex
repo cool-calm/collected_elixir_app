@@ -1,0 +1,20 @@
+<.header>
+  Git hub content <%= @github_content.id %>
+  <:subtitle>This is a github_content record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/github_cached_content/#{@github_content}/edit"}>
+      <.button>Edit github_content</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Owner"><%= @github_content.owner %></:item>
+  <:item title="Repo"><%= @github_content.repo %></:item>
+  <:item title="Sha"><%= @github_content.sha %></:item>
+  <:item title="Path"><%= @github_content.path %></:item>
+  <:item title="Content"><%= @github_content.content %></:item>
+  <:item title="Content type"><%= @github_content.content_type %></:item>
+</.list>
+
+<.back navigate={~p"/github_cached_content"}>Back to github_cached_content</.back>
