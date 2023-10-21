@@ -292,6 +292,10 @@ defmodule CollectedPublicData.ContentCache do
     Repo.delete(markdown_content)
   end
 
+  def delete_all_markdown_content() do
+    Repo.delete_all(MarkdownContent)
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking markdown_content changes.
 
