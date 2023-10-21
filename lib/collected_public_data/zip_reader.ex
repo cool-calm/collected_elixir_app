@@ -59,8 +59,8 @@ defmodule CollectedPublicData.ZipReader do
          :ends_with,
          name_suffix
        )
-       when is_binary(name_containing) do
-    include_name?(to_string(name), :ends_with, suffix)
+       when is_binary(name_suffix) do
+    include_name?(to_string(name), :ends_with, name_suffix)
   end
 
   defp include_zip_file?(_, _, _), do: false
