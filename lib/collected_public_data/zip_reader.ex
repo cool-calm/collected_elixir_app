@@ -45,6 +45,7 @@ defmodule CollectedPublicData.ZipReader do
          {:zip_file, name,
           {:file_info, _size, :regular, _access, _atime, _mtime, _ctime, _mode, _links, _, _, _,
            _, _}, _comment, _offset, _comp_size},
+         :contains,
          name_containing
        )
        when is_binary(name_containing) do
@@ -52,12 +53,17 @@ defmodule CollectedPublicData.ZipReader do
   end
 
   defp include_zip_file?(
-         {:zip_file, _, {:file_info, _, _, _, _, _, _, _, _, _, _, _, _, _}, _, _, _},
-         name_containing
+         {:zip_file, name,
+          {:file_info, _size, :regular, _access, _atime, _mtime, _ctime, _mode, _links, _, _, _,
+           _, _}, _comment, _offset, _comp_size},
+         :ends_with,
+         name_suffix
        )
        when is_binary(name_containing) do
-    false
+    include_name?(to_string(name), :ends_with, suffix)
   end
+
+  defp include_zip_file?(_, _, _), do: false
 
   defmodule FileFilter do
     defstruct name_containing: "", name_ending_with: "", content_containing: ""
@@ -71,7 +77,11 @@ defmodule CollectedPublicData.ZipReader do
     case String.trim(content_containing) do
       "" ->
         zip_files = list_files(zip)
-        Enum.filter(zip_files, fn file -> include_zip_file?(file, name_containing) end)
+
+        Enum.filter(zip_files, fn file ->
+          include_zip_file?(file, :contains, name_containing) and
+            include_zip_file?(file, :ends_with, name_ending_with)
+        end)
 
       content_containing ->
         result =
