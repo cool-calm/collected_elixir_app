@@ -24,6 +24,18 @@ defmodule CollectedPublicData.ContentTransform do
     Repo.all(TransformResponse)
   end
 
+  def list_outputs_of(in_media_type, in_sha256) do
+    TransformResponse
+    |> where(in_media_type: ^in_media_type, in_sha256: ^in_sha256)
+    |> Repo.all()
+  end
+
+  def list_inputs_to(out_media_type, out_sha256) do
+    TransformResponse
+    |> where(out_media_type: ^out_media_type, out_sha256: ^out_sha256)
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single transform_response.
 

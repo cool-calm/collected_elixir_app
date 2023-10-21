@@ -1,17 +1,32 @@
 <.header>
-  Wasm content <%= @wasm_content.id %>
-  <:subtitle>This is a wasm_content record from your database.</:subtitle>
-  <:actions>
-    <.link href={~p"/wasm/#{@wasm_content}/edit"}>
-      <.button>Edit wasm_content</.button>
-    </.link>
-  </:actions>
+  <div class="font-mono"><.link href={~p"/wasm"}>wasm</.link>/<data class="inline-flex truncate w-[8ch]"><%= @wasm_content.sha256 %></data></div>
+  <:subtitle>
+    <data class="font-mono"><%= @wasm_content.size %> B</data>
+  </:subtitle>
 </.header>
 
-<.list>
-  <:item title="SHA256"><data class="oldstyle-nums"><%= @wasm_content.sha256 %></data></:item>
-  <:item title="Byte size"><data class="oldstyle-nums"><%= @wasm_content.size %> B</data></:item>
-  <%!-- <:item title="Content"><%= @wasm_content.content %></:item> --%>
-</.list>
+
+<div class="prose mt-8">
+  <h2>Exports</h2>
+  <pre id="wasm_exports" class="break-words whitespace-pre-wrap"></pre>
+
+  <details>
+    <summary>Base64 encoded</summary>
+    <pre class="break-words whitespace-pre-wrap">
+      <%= "data:application/wasm;base64,#{Base.encode64(@wasm_content.content)}" %>
+    </pre>
+  </details>
+</div>
+
+<script type="module">
+  const dataURL = <%= raw(Jason.encode!("data:application/wasm;base64,#{Base.encode64(@wasm_content.content)}")) %>
+  WebAssembly.compileStreaming(fetch(dataURL))
+    .then(mod => {
+      const exports = WebAssembly.Module.exports(mod);
+      //console.log(exports);
+      const text = exports.map(exp => `${exp.kind.padStart("    function".length, " ")}  ${exp.name}`).join("\n");
+      document.getElementById("wasm_exports").textContent = text;
+    });
+</script>
 
 <.back navigate={~p"/wasm"}>Back to WebAssembly</.back>

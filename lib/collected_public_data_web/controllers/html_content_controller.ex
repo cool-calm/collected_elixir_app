@@ -3,6 +3,7 @@ defmodule CollectedPublicDataWeb.HTMLContentController do
 
   alias CollectedPublicData.ContentCache
   alias CollectedPublicData.ContentCache.HTMLContent
+  alias CollectedPublicData.ContentTransform
 
   def index(conn, _params) do
     html_cached_content = ContentCache.list_html_cached_content()
@@ -28,7 +29,11 @@ defmodule CollectedPublicDataWeb.HTMLContentController do
 
   def show(conn, %{"id" => id}) do
     html_content = ContentCache.get_html_content!(id)
-    render(conn, :show, html_content: html_content)
+
+    inputs = ContentTransform.list_inputs_to("text/html", html_content.sha256)
+    outputs = ContentTransform.list_outputs_of("text/html", html_content.sha256)
+
+    render(conn, :show, html_content: html_content, inputs: inputs, outputs: outputs)
   end
 
   def edit(conn, %{"id" => id}) do

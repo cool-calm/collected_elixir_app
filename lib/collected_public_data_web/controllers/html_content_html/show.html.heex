@@ -10,3 +10,16 @@
 </div>
 
 <.back navigate={~p"/html"}>Back to HTML</.back>
+
+<hr class="my-12">
+
+<h2>Inputs</h2>
+<.list>
+  <:item :for={input <- @inputs} title={input.in_media_type}><data class="inline-block font-mono truncate w-[9ch]"><%= input.in_sha256 %></data></:item>
+</.list>
+
+<h2>Outputs</h2>
+<.list>
+  <:item :for={output <- @outputs} title={output.out_media_type}><data class="inline-block font-mono truncate w-[9ch]"><%= output.out_sha256 %></data></:item>
+</.list>
+

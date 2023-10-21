@@ -1,9 +1,9 @@
 defmodule CollectedPublicDataWeb.MarkdownContentController do
   use CollectedPublicDataWeb, :controller
 
-  alias CollectedPublicData.ContentTransform
   alias CollectedPublicData.ContentCache
   alias CollectedPublicData.ContentCache.MarkdownContent
+  alias CollectedPublicData.ContentTransform
 
   def index(conn, _params) do
     markdown_cached_content = ContentCache.list_markdown_cached_content()
@@ -29,7 +29,10 @@ defmodule CollectedPublicDataWeb.MarkdownContentController do
 
   def show(conn, %{"id" => id}) do
     markdown_content = ContentCache.get_markdown_content!(id)
-    render(conn, :show, markdown_content: markdown_content)
+
+    outputs = ContentTransform.list_outputs_of("text/markdown", markdown_content.sha256)
+
+    render(conn, :show, markdown_content: markdown_content, outputs: outputs)
   end
 
   def edit(conn, %{"id" => id}) do

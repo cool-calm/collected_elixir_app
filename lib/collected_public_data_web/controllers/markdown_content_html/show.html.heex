@@ -1,5 +1,8 @@
 <.header>
-  Markdown #<%= @markdown_content.id %>
+  <div class="font-mono"><.link href={~p"/markdown"}>markdown</.link>/<data class="inline-flex truncate w-[8ch]"><%= @markdown_content.sha256 %></data></div>
+  <:subtitle>
+    <data class="font-mono"><%= @markdown_content.size %> B</data>
+  </:subtitle>
   <:actions>
     <.simple_form :let={f} for={%{}} action={~p"/markdown/#{@markdown_content}/html"}>
       <:actions>
@@ -9,13 +12,12 @@
   </:actions>
 </.header>
 
-<.list>
-  <:item title="Sha256"><data class="inline-block font-mono truncate w-[9ch]"><%= @markdown_content.sha256 %></data></:item>
-  <:item title="Size"><%= @markdown_content.size %> B</:item>
-</.list>
-
-<hr class="my-8">
-
-<pre class=" break-words whitespace-pre-wrap"><%= @markdown_content.content %></pre>
+<div class="prose">
+  <pre class="mt-8 break-words whitespace-pre-wrap"><%= @markdown_content.content %></pre>
+</div>
 
 <.back navigate={~p"/markdown"}>Back to Markdown</.back>
+
+<.list>
+  <:item :for={output <- @outputs} title={output.out_media_type}><data class="inline-block font-mono truncate w-[9ch]"><%= output.out_sha256 %></data></:item>
+</.list>
