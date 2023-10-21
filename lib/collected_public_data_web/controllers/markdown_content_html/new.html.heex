@@ -1,8 +1,8 @@
 <.header>
-  New Markdown content
-  <:subtitle>Use this form to manage markdown_content records in your database.</:subtitle>
+  Add Markdown
 </.header>
 
 <.markdown_content_form changeset={@changeset} action={~p"/markdown"} />
+<.import_github_repo_form action={~p"/markdown"} />
 
-<.back navigate={~p"/markdown"}>Back to markdown_cached_content</.back>
+<.back navigate={~p"/markdown"}>Back to Markdown</.back>

@@ -19,6 +19,8 @@ defmodule CollectedPublicDataWeb.CoreComponents do
   alias Phoenix.LiveView.JS
   import CollectedPublicDataWeb.Gettext
 
+  def measure_class(), do: "max-w-2xl px-3 mx-auto"
+
   @doc """
   Renders a modal.
 

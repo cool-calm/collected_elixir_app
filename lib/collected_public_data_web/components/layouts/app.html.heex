@@ -1,17 +1,12 @@
 <header class="px-4 sm:px-6 lg:px-8">
-  <div class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm">
-    <div class="flex items-center gap-4">
-      <a href="/">
-        <img src={~p"/images/logo.svg"} width="36" />
-      </a>
-      <p class="bg-brand/5 text-brand rounded-full px-2 font-medium leading-6">
-        v<%= Application.spec(:phoenix, :vsn) %>
-      </p>
-    </div>
+  <div class="flex items-baseline justify-between border-b-4 border-yellow-400 pt-6 pb-3 text-sm">
+    <a href="/" class="text-xl font-bold">
+      Collected.
+    </a>
     <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
-      <.link href={~p"/wasm"}>Wasm</.link>
       <.link href={~p"/markdown"}>Markdown</.link>
       <.link href={~p"/html"}>HTML</.link>
+      <.link href={~p"/wasm"}>WebAssembly</.link>
       <.link href={~p"/content_transform_response"}>Transforms</.link>
       <.link href={~p"/github_cached_content"}>GitHub</.link>
     </div>

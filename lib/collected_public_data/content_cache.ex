@@ -247,7 +247,12 @@ defmodule CollectedPublicData.ContentCache do
   @doc """
   Creates markdown content if it doesn’t already exist.
   """
-  def create_markdown_content(attrs \\ %{}) do
+  def create_markdown_content(attrs)
+
+  def create_markdown_content(string) when is_binary(string) do
+    create_markdown_content(%{"content" => string})
+  end
+  def create_markdown_content(attrs) do
     %MarkdownContent{}
     |> MarkdownContent.changeset(attrs)
     |> then(&upsert_content(:markdown, &1))

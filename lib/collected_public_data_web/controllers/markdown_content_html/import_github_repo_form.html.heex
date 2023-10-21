@@ -1,0 +1,7 @@
+<.simple_form :let={f} for={%{}} action={@action}>
+  <.input field={f[:github_repo_owner]} label="GitHub Repo Owner" autofocus />
+  <.input field={f[:github_repo_name]} label="GitHub Repo Name" autofocus />
+  <:actions>
+    <.button>Import Markdown from GitHub Repo</.button>
+  </:actions>
+</.simple_form>

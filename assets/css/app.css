@@ -2,4 +2,19 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-/* This file is for your main application CSS */
+:root {
+    --A-text-decoration: none;
+    --A\:hover-text-decoration: underline;
+}
+
+A {
+    text-decoration: var(--A-text-decoration);
+}
+A:hover:not([class *= "hover:"]) {
+    text-decoration: var(--A\:hover-text-decoration);
+}
+
+._links_ {
+    --A-text-decoration: underline;
+    --A\:hover-text-decoration: unset;
+}
