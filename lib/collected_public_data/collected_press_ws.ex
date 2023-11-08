@@ -202,9 +202,11 @@ defmodule CollectedPressWs do
       {:ok, put_in(state.conn, conn)}
     else
       {:error, %Mint.WebSocket{} = websocket, reason} ->
+        IO.puts("CollectedPressWs error Mint.WebSocket.encode")
         {:error, put_in(state.websocket, websocket), reason}
 
       {:error, conn, reason} ->
+        IO.puts("CollectedPressWs error Mint.WebSocket.stream_request_body")
         {:error, put_in(state.conn, conn), reason}
     end
   end
